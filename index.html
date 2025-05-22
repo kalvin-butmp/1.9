@@ -6,6 +6,29 @@
   <title>Avancement du Projet</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    /* PDF viewer container */
+    #pdf-viewer {
+      width: 100%;
+      max-width: 800px; /* correspond environ à une page A4 en pixels */
+      height: 700px; /* taille de la fenêtre scrollable */
+      overflow-y: scroll;
+      margin: 60px auto 100px auto;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+
+    #pdf-viewer canvas {
+      display: block;
+      margin: 20px auto;
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      background-color: white;
+    }
+  </style>
 </head>
 <body>
 
@@ -62,15 +85,15 @@
     </div>
   </div>
 
-  <!-- Ajout du PDF déroulant -->
-  <h2 style="text-align: center; margin-top: 100px;">Document PDF complet</h2>
-  <div id="pdf-container" style="margin-top: 40px;"></div>
+  <!-- PDF affiché en bas dans une fenêtre scrollable -->
+  <h2 style="text-align: center; margin-top: 100px;">Cahier du Projet (PDF)</h2>
+  <div id="pdf-viewer"></div>
 </main>
 
 <script>
-  const url = 'cahierPDF.pdf'; // Le fichier PDF doit être dans le même dossier
+  const url = 'cahierPDF.pdf'; // Assure-toi que ce nom est exact et que le fichier est dans le même dossier
 
-  const container = document.getElementById('pdf-container');
+  const container = document.getElementById('pdf-viewer');
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
   pdfjsLib.getDocument(url).promise.then(pdf => {
@@ -78,14 +101,10 @@
       pdf.getPage(pageNum).then(page => {
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
-        const viewport = page.getViewport({ scale: 1.5 });
+        const viewport = page.getViewport({ scale: 1.3 }); // Échelle adaptée au format A4
+
         canvas.height = viewport.height;
         canvas.width = viewport.width;
-
-        canvas.style.display = 'block';
-        canvas.style.margin = '40px auto';
-        canvas.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
-        canvas.style.background = 'white';
 
         container.appendChild(canvas);
 
@@ -96,8 +115,8 @@
       });
     }
   }).catch(error => {
-    container.innerHTML = `<p style="color:red; text-align:center;">Erreur : le PDF n’a pas pu être chargé. Vérifie que "cahierPDF.pdf" est bien dans le dossier.</p>`;
-    console.error('Erreur de chargement PDF :', error);
+    container.innerHTML = `<p style="color:red; text-align:center;">Erreur : le PDF n’a pas pu être chargé. Vérifie le nom du fichier.</p>`;
+    console.error('Erreur PDF :', error);
   });
 </script>
 
