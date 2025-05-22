@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Avancement du Projet</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+
+<!-- Bandeau -->
+<header>
+  <div class="header-logos">
+    <a href="https://iut.univ-amu.fr/fr/formations/bachelor-universitaire-de-technologie/but-mesures-physiques" target="_blank">
+      <img src="mp-logo.png" alt="Logo MP" class="logo-mp" />
+    </a>
+    <h1>Département Mesure Physique - Aix Marseille Université</h1>
+    <a href="https://ent.univ-amu.fr/" target="_blank">
+      <img src="amu-logo.png" alt="Logo AMU" class="logo-amu" />
+    </a>
+  </div>
+
+  <div class="social-logos">
+    <a href="https://www.instagram.com/bde_mp_marseille?igsh=cDRmN3IzdWI5aDAw" target="_blank">
+      <img src="logoinsta.png" alt="Logo Instagram" class="social-logo" />
+    </a>
+    <a href="https://www.facebook.com/IUTMars/" target="_blank">
+      <img src="logofacebook.png" alt="Logo Facebook" class="social-logo" />
+    </a>
+  </div>
+</header>
+
+<!-- Image bandeau -->
+<div class="bandeau-image">
+  <img src="bandeau.jpg" alt="Image paysage" />
+</div>
+
+<main>
+  <h2>Voici des documents et images résumant l'avancement et la finalité du projet</h2>
+
+  <!-- Deux images côte à côte -->
+  <div class="images-container">
+    <div class="image-box">
+      <img src="doc1.jpg" alt="Document 1" class="project-image" />
+      <p class="caption">Constitution électrique d’une enceinte</p>
+    </div>
+    <div class="image-box">
+      <img src="doc2.jpg" alt="Document 2" class="project-image" />
+      <p class="caption">Premier design de l’image</p>
+    </div>
+  </div>
+
+  <h2 style="text-align: center; margin-top: 60px;">Deux images</h2>
+
+  <div class="images-container">
+    <div class="image-box">
+      <img src="doc3.jpg" alt="Document 3" class="project-image" />
+    </div>
+    <div class="image-box">
+      <img src="doc4.jpg" alt="Document 4" class="project-image" />
+    </div>
+  </div>
+
+  <!-- Ajout du PDF déroulant -->
+  <h2 style="text-align: center; margin-top: 100px;">Document PDF complet</h2>
+  <div id="pdf-container" style="margin-top: 40px;"></div>
+</main>
+
+<script>
+  const url = 'cahierPDF.pdf'; // Le fichier PDF doit être dans le même dossier
+
+  const container = document.getElementById('pdf-container');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  pdfjsLib.getDocument(url).promise.then(pdf => {
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      pdf.getPage(pageNum).then(page => {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const viewport = page.getViewport({ scale: 1.5 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        canvas.style.display = 'block';
+        canvas.style.margin = '40px auto';
+        canvas.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
+        canvas.style.background = 'white';
+
+        container.appendChild(canvas);
+
+        page.render({
+          canvasContext: context,
+          viewport: viewport
+        });
+      });
+    }
+  }).catch(error => {
+    container.innerHTML = `<p style="color:red; text-align:center;">Erreur : le PDF n’a pas pu être chargé. Vérifie que "cahierPDF.pdf" est bien dans le dossier.</p>`;
+    console.error('Erreur de chargement PDF :', error);
+  });
+</script>
+
+</body>
+</html>
